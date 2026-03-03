@@ -1,13 +1,27 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 export function AuthCard() {
   const [mode, setMode] = useState<"login"|"register">("register");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [status, setStatus] = useState("");
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const mq = window.matchMedia("(max-width: 768px)");
+    const onChange = () => setIsMobile(mq.matches);
+    onChange();
+    mq.addEventListener("change", onChange);
+    return () => mq.removeEventListener("change", onChange);
+  }, []);
 
   async function submit() {
+    if (isMobile && mode === "register") {
+      setStatus("Mobile registration uses MetaMask only. Please use Connect Wallet.");
+      return;
+    }
+
     setStatus("...");
     const r = await fetch(`/api/auth/password/${mode}`, {
       method: "POST",
@@ -21,6 +35,8 @@ export function AuthCard() {
     window.location.href = "/";
   }
 
+  const mobileRegisterOnly = isMobile && mode === "register";
+
   return (
     <div className="panel">
       <div className="row" style={{ justifyContent: "space-between" }}>
@@ -31,11 +47,17 @@ export function AuthCard() {
         </button>
       </div>
       <div style={{ marginTop: 10, display: "grid", gap: 10 }}>
-        <input className="input" placeholder="email" value={email} onChange={(e) => setEmail(e.target.value)} />
-        <input className="input" placeholder="password (8+ chars)" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
-        <button className="btn btnPrimary" onClick={submit}>{mode === "register" ? "Register" : "Login"}</button>
+        {mobileRegisterOnly ? (
+          <div className="small">On mobile, new account registration is available with MetaMask only. Switch to Login for email sign-in, or use Connect Wallet below.</div>
+        ) : (
+          <>
+            <input className="input" placeholder="email" value={email} onChange={(e) => setEmail(e.target.value)} />
+            <input className="input" placeholder="password (8+ chars)" type="password" value={password} onChange={(e) => setPassword(e.target.value)} />
+            <button className="btn btnPrimary" onClick={submit}>{mode === "register" ? "Register with Email" : "Login with Email"}</button>
+          </>
+        )}
         {status ? <div className="small">{status}</div> : null}
-        <div className="small">No emails, just password auth.</div>
+        {!mobileRegisterOnly ? <div className="small">Email + password auth is enabled.</div> : null}
       </div>
     </div>
   );
