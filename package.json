@@ -1,0 +1,14 @@
+{
+  "name": "movie-monorepo",
+  "private": true,
+  "packageManager": "pnpm@9.12.3",
+  "scripts": {
+    "dev:web": "pnpm --filter @movie/web dev",
+    "dev:mobile": "pnpm --filter @movie/mobile start",
+    "db:migrate": "pnpm --filter @movie/web prisma:migrate",
+    "db:studio": "pnpm --filter @movie/web prisma:studio"
+  },
+  "devDependencies": {
+    "typescript": "^5.6.3"
+  }
+}

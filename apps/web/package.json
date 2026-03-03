@@ -1,0 +1,32 @@
+{
+  "name": "@movie/web",
+  "version": "0.0.0",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "prisma:migrate": "prisma migrate dev --name init",
+    "prisma:studio": "prisma studio"
+  },
+  "dependencies": {
+    "@movie/api-client": "workspace:*",
+    "@movie/core": "workspace:*",
+    "@movie/schemas": "workspace:*",
+    "@prisma/client": "^5.20.0",
+    "bcryptjs": "^2.4.3",
+    "ethers": "^6.13.2",
+    "jose": "^5.9.6",
+    "next": "15.5.12",
+    "react": "19.2.0",
+    "react-dom": "19.2.0",
+    "siwe": "^2.3.2"
+  },
+  "devDependencies": {
+    "@types/node": "^20.16.11",
+    "@types/react": "19.2.14",
+    "prisma": "^5.20.0",
+    "typescript": "^5.6.3"
+  }
+}
