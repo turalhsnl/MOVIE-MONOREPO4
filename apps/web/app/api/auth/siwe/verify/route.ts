@@ -9,6 +9,8 @@ export async function POST(request: Request) {
   const nonce = c.get("siwe_nonce")?.value;
   const { message, signature } = (await request.json()) as { message: string; signature: string };
 
+  if (!nonce) return NextResponse.json({ error: "SIWE nonce missing or expired. Please retry Connect Wallet." }, { status: 400 });
+
   try {
     const siwe = new SiweMessage(message);
     const result = await siwe.verify({ signature, nonce });
@@ -32,7 +34,9 @@ export async function POST(request: Request) {
           res.cookies.set("siwe_nonce", "", { path: "/", maxAge: 0 });
           return res;
         }
-      } catch {}
+      } catch {
+        // fall through to wallet-auth user flow
+      }
     }
 
     const user = await prisma.user.upsert({ where: { walletAddress: wallet }, update: {}, create: { walletAddress: wallet, profile: { create: { displayName: null } } } });
