@@ -61,7 +61,7 @@ export default async function MovieDetailsPage({ params }: { params: Promise<{ i
                 <div><b>Homepage</b><div className="small">{m.homepage ? <a href={m.homepage} target="_blank">Open</a> : "-"}</div></div>
               </div>
             </div>
-          </div>
+          </section>
         </div>
       </div>
     </main>

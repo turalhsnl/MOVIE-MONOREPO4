@@ -71,6 +71,7 @@ export function MetaMaskSIWE() {
 
       await refresh();
       setStatus("Done ✅");
+      window.location.href = "/";
     } catch (e: any) {
       setStatus(e?.message ?? "Failed");
     }
