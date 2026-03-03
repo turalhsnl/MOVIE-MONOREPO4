@@ -19,7 +19,7 @@ export function MetaMaskSIWE() {
       setStatus("Wallet linked ✅");
     } else {
       setAddress(null);
-      setStatus(hasMetaMask ? "Link wallet for extra security" : "MetaMask not found");
+      setStatus(hasMetaMask ? "Connect wallet to register/login" : "MetaMask not found");
     }
   }, [hasMetaMask]);
 
@@ -81,13 +81,13 @@ export function MetaMaskSIWE() {
     <div className="panel">
       <div className="row" style={{ justifyContent: "space-between" }}>
         <div>
-          <div style={{ fontWeight: 900 }}>MetaMask Security</div>
+          <div style={{ fontWeight: 900 }}>MetaMask Login</div>
           <div className="small">{status}</div>
         </div>
         {address ? <span className="badge">{address.slice(0,6)}…{address.slice(-4)}</span> : null}
       </div>
       <button className="btn btnPrimary" onClick={connect} disabled={!hasMetaMask} style={{ marginTop: 10, opacity: hasMetaMask ? 1 : 0.6 }}>
-        {hasMetaMask ? "Connect Wallet" : "Install MetaMask"}
+        {hasMetaMask ? "Register / Login with MetaMask" : "Install MetaMask"}
       </button>
     </div>
   );

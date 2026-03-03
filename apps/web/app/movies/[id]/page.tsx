@@ -30,13 +30,15 @@ export default async function MovieDetailsPage({ params }: { params: Promise<{ i
           </div>
         ) : null}
 
-        <div className="movieDetailContent" style={{ marginTop: backdrop ? -280 : 0 }}>
-          <div className="card movieDetailPosterCard">
-            {poster ? <Image src={poster} alt={m.title} width={560} height={840} style={{ width: "100%", height: "auto" }} /> : null}
-          </div>
+        <div className="movieDetailLayout">
+          <aside className="movieDetailPosterWrap">
+            <div className="card movieDetailPosterCard">
+              {poster ? <Image src={poster} alt={m.title} width={560} height={840} style={{ width: "100%", height: "auto" }} /> : null}
+            </div>
+          </aside>
 
-          <div className="movieDetailInfo">
-            <h1 style={{ margin: 0, fontSize: 44, letterSpacing: "-0.02em" }}>{m.title}</h1>
+          <section className="movieDetailInfo">
+            <h1 className="movieDetailTitle">{m.title}</h1>
 
             <div className="row" style={{ marginTop: 10 }}>
               {m.release_date ? <span className="badge">{m.release_date}</span> : null}
