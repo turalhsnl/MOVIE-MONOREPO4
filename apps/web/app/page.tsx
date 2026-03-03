@@ -1,10 +1,14 @@
 import Link from "next/link";
+import { redirect } from "next/navigation";
 import { getPopularMovies } from "@movie/api-client";
 import { toMovieCardVM } from "@movie/core";
-import { AuthBar } from "../components/AuthBar";
+import { getAuthedUser } from "@/lib/auth";
 import { MovieGridClient } from "../components/MovieGridClient";
 
 export default async function Page() {
+  const user = await getAuthedUser();
+  if (!user) redirect("/auth");
+
   const apiKey = process.env.TMDB_API_KEY ?? "";
   const data = await getPopularMovies({ apiKey }, 1);
   const movies = data.results.map(toMovieCardVM);
@@ -21,7 +25,6 @@ export default async function Page() {
             <Link className="pilllink" href="/profile">Profile</Link>
           </div>
         </div>
-        <AuthBar />
       </header>
       <section><MovieGridClient movies={movies} /></section>
     </main>

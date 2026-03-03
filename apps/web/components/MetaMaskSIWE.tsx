@@ -27,7 +27,10 @@ export function MetaMaskSIWE() {
 
   const connect = useCallback(async () => {
     try {
-      if (!window.ethereum) return;
+      if (!window.ethereum) {
+        setStatus("MetaMask provider not detected");
+        return;
+      }
       setStatus("Connecting...");
       const provider = new BrowserProvider(window.ethereum as any);
       await window.ethereum.request({ method: "eth_requestAccounts" });
@@ -38,7 +41,9 @@ export function MetaMaskSIWE() {
 
       setStatus("Nonce...");
       const nonceRes = await fetch("/api/auth/siwe/nonce", { cache: "no-store", credentials: "include" });
-      const { nonce } = await nonceRes.json();
+      const nonceJson = await nonceRes.json();
+      if (!nonceRes.ok || !nonceJson?.nonce) throw new Error(nonceJson?.error ?? "Failed to fetch SIWE nonce");
+      const { nonce } = nonceJson;
 
       const msg = new SiweMessage({
         domain: window.location.host,
@@ -66,6 +71,7 @@ export function MetaMaskSIWE() {
 
       await refresh();
       setStatus("Done ✅");
+      window.location.href = "/";
     } catch (e: any) {
       setStatus(e?.message ?? "Failed");
     }
