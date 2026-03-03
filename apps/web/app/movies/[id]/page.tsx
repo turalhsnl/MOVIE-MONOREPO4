@@ -8,9 +8,10 @@ function money(n?: number) {
   return Intl.NumberFormat("en-US", { style: "currency", currency: "USD", maximumFractionDigits: 0 }).format(n);
 }
 
-export default async function MovieDetailsPage({ params }: { params: { id: string } }) {
+export default async function MovieDetailsPage({ params }: { params: Promise<{ id: string }> }) {
   const apiKey = process.env.TMDB_API_KEY ?? "";
-  const movieId = Number(params.id);
+  const { id } = await params;
+  const movieId = Number(id);
   const m: any = await getMovieDetails({ apiKey }, movieId);
 
   const poster = tmdbImageUrl(m.poster_path ?? null, "w500");
@@ -21,21 +22,23 @@ export default async function MovieDetailsPage({ params }: { params: { id: strin
     <main className="container">
       <Link className="pilllink" href="/">← Back</Link>
 
-      <div className="panel" style={{ marginTop: 18, padding: 0, overflow: "hidden", position: "relative", borderRadius: 22 }}>
+      <div className="panel movieDetailPanel">
         {backdrop ? (
-          <div style={{ position: "relative", width: "100%", height: 340 }}>
+          <div className="movieDetailBackdrop">
             <Image src={backdrop} alt={m.title} fill sizes="100vw" style={{ objectFit: "cover", filter: "saturate(1.1)" }} />
-            <div style={{ position: "absolute", inset: 0, background: "linear-gradient(90deg, rgba(7,10,19,.95) 0%, rgba(7,10,19,.65) 45%, rgba(7,10,19,.2) 100%)" }} />
+            <div className="movieDetailBackdropOverlay" />
           </div>
         ) : null}
 
-        <div style={{ padding: 18, marginTop: backdrop ? -280 : 0, display: "grid", gridTemplateColumns: "280px 1fr", gap: 18 }}>
-          <div className="card" style={{ borderRadius: 18 }}>
-            {poster ? <Image src={poster} alt={m.title} width={560} height={840} style={{ width: "100%", height: "auto" }} /> : null}
-          </div>
+        <div className="movieDetailLayout">
+          <aside className="movieDetailPosterWrap">
+            <div className="card movieDetailPosterCard">
+              {poster ? <Image src={poster} alt={m.title} width={560} height={840} style={{ width: "100%", height: "auto" }} /> : null}
+            </div>
+          </aside>
 
-          <div style={{ alignSelf: "end" }}>
-            <h1 style={{ margin: 0, fontSize: 44, letterSpacing: "-0.02em" }}>{m.title}</h1>
+          <section className="movieDetailInfo">
+            <h1 className="movieDetailTitle">{m.title}</h1>
 
             <div className="row" style={{ marginTop: 10 }}>
               {m.release_date ? <span className="badge">{m.release_date}</span> : null}
@@ -60,7 +63,7 @@ export default async function MovieDetailsPage({ params }: { params: { id: strin
                 <div><b>Homepage</b><div className="small">{m.homepage ? <a href={m.homepage} target="_blank">Open</a> : "-"}</div></div>
               </div>
             </div>
-          </div>
+          </section>
         </div>
       </div>
     </main>
